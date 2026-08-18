@@ -183,14 +183,17 @@ export default function FishingGame() {
 
 
   // --- handleFish: Corrected Logic ---
-  const handleFish = useCallback(() => {
-    
-    if (gameState.isFishing) {
-      // REEL IN (Catch a fish)
-      const fishSize = Math.random() * 100 + 10;
-      const fishType = ['Bass', 'Trout', 'Salmon', 'Pike', 'Catfish'][Math.floor(Math.random() * 5)];
-      
-      let calculatedFishCount: number;
+  const handleFish = useCallback(() => {
+    
+    if (gameState.isFishing) {
+      // REEL IN (Catch a fish) — ignore repeat triggers for the same cast
+      if (reelLockRef.current) return;
+      reelLockRef.current = true;
+
+      const fishSize = Math.random() * 100 + 10;
+      const fishType = ['Bass', 'Trout', 'Salmon', 'Pike', 'Catfish'][Math.floor(Math.random() * 5)];
+      
+      let calculatedFishCount: number;
 
       const catchData = {
         type: fishType,
@@ -200,33 +203,34 @@ export default function FishingGame() {
         timestamp: Date.now()
       };
 
-      // 1. IMMEDIATE LOCAL STATE UPDATE (Ensures fishCaught displays correctly)
-      setGameState(prev => {
-        calculatedFishCount = prev.fishCaught + 1;
+      // 1. IMMEDIATE LOCAL STATE UPDATE (Ensures fishCaught displays correctly)
+      setGameState(prev => {
+        calculatedFishCount = prev.fishCaught + 1;
 
-        if (prev.fishCaught === 0) { 
-          unlockAchievement('first-fish'); 
-        }
-        return {
-          ...prev,
-          isFishing: false,
-          currentCatch: catchData, 
-          fishCaught: calculatedFishCount 
-        };
-      });
+        if (prev.fishCaught === 0) { 
+          unlockAchievement('first-fish'); 
+        }
+        return {
+          ...prev,
+          isFishing: false,
+          currentCatch: catchData, 
+          fishCaught: calculatedFishCount 
+        };
+      });
         
-      // 2. ASYNC DATABASE UPDATE
-      saveCatchAndUpdateStats(catchData, calculatedFishCount!, fishSize);
+      // 2. ASYNC DATABASE UPDATE
+      saveCatchAndUpdateStats(catchData, calculatedFishCount!, fishSize);
         
-    } else if (!gameState.isFishing) { 
-      // CAST LINE (Allows standing or sitting to cast)
-      setGameState(prev => ({
-        ...prev,
-        isFishing: true,
-        currentCatch: null
-      }));
-    }
-  }, [gameState.isFishing, gameState.currentWeather, unlockAchievement, saveCatchAndUpdateStats]);
+    } else { 
+      // CAST LINE (Allows standing or sitting to cast)
+      reelLockRef.current = false;
+      setGameState(prev => ({
+        ...prev,
+        isFishing: true,
+        currentCatch: null
+      }));
+    }
+  }, [gameState.isFishing, gameState.currentWeather, unlockAchievement, saveCatchAndUpdateStats]);
 
 
 // --- Modal Handlers ---
