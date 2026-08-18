@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Fish, Trophy, Hash, WifiOff } from 'lucide-react';
+import { X, Fish, Trophy, Hash } from 'lucide-react';
 
 const FISH_TYPES = ['Bass', 'Trout', 'Salmon', 'Pike', 'Catfish'];
 
