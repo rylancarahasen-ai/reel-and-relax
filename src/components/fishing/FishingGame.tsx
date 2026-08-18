@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GameStats } from '@/entities/GameStats';
 import { User } from '@/entities/User';
 import GameBackground from './GameBackground';
@@ -38,9 +38,11 @@ export default function FishingGame() {
   // Track keys that have been pressed but whose action hasn't been handled yet (for single-press actions)
   const [keyPressEvents, setKeyPressEvents] = useState<Record<string, boolean>>({});
 
-  const [fishCollection, setFishCollection] = useState<any[]>([]);
-  const [achievements, setAchievements] = useState<any[]>([]);
-  const [cycleCount, setCycleCount] = useState(0); 
+  const [fishCollection, setFishCollection] = useState<any[]>([]);
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [cycleCount, setCycleCount] = useState(0); 
+  // Guards against a single reel-in registering more than one catch
+  const reelLockRef = useRef(false);
 
   // --- Game Data Loaders (useCallback for stability) ---
 
@@ -181,49 +183,54 @@ export default function FishingGame() {
 
 
   // --- handleFish: Corrected Logic ---
-  const handleFish = useCallback(() => {
-    
-    if (gameState.isFishing) {
-      // REEL IN (Catch a fish)
-      const fishSize = Math.random() * 100 + 10;
-      const fishType = ['Bass', 'Trout', 'Salmon', 'Pike', 'Catfish'][Math.floor(Math.random() * 5)];
-      
-      let calculatedFishCount: number;
+  const handleFish = useCallback(() => {
+    
+    if (gameState.isFishing) {
+      // REEL IN (Catch a fish) — ignore repeat triggers for the same cast
+      if (reelLockRef.current) return;
+      reelLockRef.current = true;
 
-      const catchData = {
-        type: fishType, 
-        size: Math.round(fishSize),
-        weather: gameState.currentWeather,
-        timestamp: Date.now()
-      };
+      const fishSize = Math.random() * 100 + 10;
+      const fishType = ['Bass', 'Trout', 'Salmon', 'Pike', 'Catfish'][Math.floor(Math.random() * 5)];
+      
+      let calculatedFishCount: number;
 
-      // 1. IMMEDIATE LOCAL STATE UPDATE (Ensures fishCaught displays correctly)
-      setGameState(prev => {
-        calculatedFishCount = prev.fishCaught + 1;
+      const catchData = {
+        type: fishType,
+        fishType: fishType,
+        size: Math.round(fishSize),
+        weather: gameState.currentWeather,
+        timestamp: Date.now()
+      };
 
-        if (prev.fishCaught === 0) { 
-          unlockAchievement('first-fish'); 
-        }
-        return {
-          ...prev,
-          isFishing: false,
-          currentCatch: catchData, 
-          fishCaught: calculatedFishCount 
-        };
-      });
+      // 1. IMMEDIATE LOCAL STATE UPDATE (Ensures fishCaught displays correctly)
+      setGameState(prev => {
+        calculatedFishCount = prev.fishCaught + 1;
+
+        if (prev.fishCaught === 0) { 
+          unlockAchievement('first-fish'); 
+        }
+        return {
+          ...prev,
+          isFishing: false,
+          currentCatch: catchData, 
+          fishCaught: calculatedFishCount 
+        };
+      });
         
-      // 2. ASYNC DATABASE UPDATE
-      saveCatchAndUpdateStats(catchData, calculatedFishCount!, fishSize);
+      // 2. ASYNC DATABASE UPDATE
+      saveCatchAndUpdateStats(catchData, calculatedFishCount!, fishSize);
         
-    } else if (!gameState.isFishing) { 
-      // CAST LINE (Allows standing or sitting to cast)
-      setGameState(prev => ({
-        ...prev,
-        isFishing: true,
-        currentCatch: null
-      }));
-    }
-  }, [gameState.isFishing, gameState.currentWeather, unlockAchievement, saveCatchAndUpdateStats]);
+    } else { 
+      // CAST LINE (Allows standing or sitting to cast)
+      reelLockRef.current = false;
+      setGameState(prev => ({
+        ...prev,
+        isFishing: true,
+        currentCatch: null
+      }));
+    }
+  }, [gameState.isFishing, gameState.currentWeather, unlockAchievement, saveCatchAndUpdateStats]);
 
 
 // --- Modal Handlers ---

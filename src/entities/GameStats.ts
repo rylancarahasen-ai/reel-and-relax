@@ -18,7 +18,7 @@ export class GameStats {
     const stats = {
       ...data,
       id: Date.now().toString(),
-      created_by: 'guest'
+      created_by: 'guest@fishingGame.com'
     };
     localStorage.setItem('fishingGameStats', JSON.stringify(stats));
     return stats;
