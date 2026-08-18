@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GameStats } from '@/entities/GameStats';
 import { User } from '@/entities/User';
 import GameBackground from './GameBackground';
@@ -38,9 +38,11 @@ export default function FishingGame() {
   // Track keys that have been pressed but whose action hasn't been handled yet (for single-press actions)
   const [keyPressEvents, setKeyPressEvents] = useState<Record<string, boolean>>({});
 
-  const [fishCollection, setFishCollection] = useState<any[]>([]);
-  const [achievements, setAchievements] = useState<any[]>([]);
-  const [cycleCount, setCycleCount] = useState(0); 
+  const [fishCollection, setFishCollection] = useState<any[]>([]);
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [cycleCount, setCycleCount] = useState(0); 
+  // Guards against a single reel-in registering more than one catch
+  const reelLockRef = useRef(false);
 
   // --- Game Data Loaders (useCallback for stability) ---
 
