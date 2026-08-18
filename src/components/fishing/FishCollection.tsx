@@ -83,12 +83,8 @@ export default function FishCollection({ fishCollection, onClose }: FishCollecti
           {totalFish === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Fish className="w-16 h-16 mx-auto mb-4 opacity-30" />
-              <h3 className="text-xl font-semibold mb-2">No Fish Collection Data</h3>
-              <p className="mb-2">Your catches will appear here when saved to the cloud.</p>
-              <div className="flex items-center justify-center gap-2 text-sm text-orange-600">
-                <WifiOff className="w-4 h-4" />
-                <span>Check your internet connection</span>
-              </div>
+              <h3 className="text-xl font-semibold mb-2">No Fish Caught Yet</h3>
+              <p className="mb-2">Cast your line and your catches will show up here.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
