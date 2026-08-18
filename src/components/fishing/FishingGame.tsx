@@ -190,12 +190,13 @@ export default function FishingGame() {
       
       let calculatedFishCount: number;
 
-      const catchData = {
-        type: fishType, 
-        size: Math.round(fishSize),
-        weather: gameState.currentWeather,
-        timestamp: Date.now()
-      };
+      const catchData = {
+        type: fishType,
+        fishType: fishType,
+        size: Math.round(fishSize),
+        weather: gameState.currentWeather,
+        timestamp: Date.now()
+      };
 
       // 1. IMMEDIATE LOCAL STATE UPDATE (Ensures fishCaught displays correctly)
       setGameState(prev => {
