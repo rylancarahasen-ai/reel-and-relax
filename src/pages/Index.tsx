@@ -1,7 +1,7 @@
-import FishingGame from '@/components/fishing/FishingGame';
+import Game3D from '@/components/game3d/Game3D';
 
 const Index = () => {
-  return <FishingGame />;
+  return <Game3D />;
 };
 
 export default Index;
