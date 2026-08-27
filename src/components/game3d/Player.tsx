@@ -21,7 +21,7 @@ export default function Player({ controlsRef, onLockChange }: PlayerProps) {
   const velocity = useRef(new THREE.Vector3());
 
   useEffect(() => {
-    camera.position.set(0, DOCK_TOP + EYE_HEIGHT, 10);
+    camera.position.set(0, DOCK_TOP + EYE_HEIGHT, 4);
     const down = (e: KeyboardEvent) => {
       keys.current[e.code] = true;
     };
