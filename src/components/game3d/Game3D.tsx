@@ -81,6 +81,7 @@ export default function Game3D() {
   const [catches, setCatches] = useState<any[]>([]);
   const [achievements, setAchievements] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [unlockToast, setUnlockToast] = useState<string | null>(null);
 
   const weather = WEATHER_CYCLE[weatherIndex];
   engine.weather = weather;
@@ -95,7 +96,8 @@ export default function Game3D() {
       await Achievement.update(found.id, { unlocked: true, unlockedAt: Date.now() });
       const updated = await Achievement.filter({ created_by: 'local-user' });
       setAchievements(updated);
-      setShowAchievements(true);
+      setUnlockToast(found.title);
+      window.setTimeout(() => setUnlockToast((t) => (t === found.title ? null : t)), 6000);
     } catch (error) {
       console.log('Could not unlock achievement:', error);
     }
@@ -122,6 +124,7 @@ export default function Game3D() {
       }
 
       try {
+        await Achievement.repairIds();
         let list = await Achievement.filter({ created_by: 'local-user' });
         for (const def of ACHIEVEMENT_DEFS) {
           if (!list.some((a) => a.achievementId === def.id)) {
@@ -281,6 +284,14 @@ export default function Game3D() {
         }}
         onRequestLock={requestLock}
       />
+
+      {unlockToast && (
+        <div className="pointer-events-none absolute left-1/2 top-24 z-30 -translate-x-1/2 rounded-xl border border-amber-300/40 bg-slate-900/90 px-5 py-3 text-center text-white shadow-xl">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-amber-300">Achievement unlocked</p>
+          <p className="font-semibold">{unlockToast}</p>
+          <p className="text-[11px] text-white/60">Press G to read it</p>
+        </div>
+      )}
 
       {showCollection && (
         <CollectionPanel catches={catches} onClose={() => setShowCollection(false)} />
