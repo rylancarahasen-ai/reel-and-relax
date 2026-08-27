@@ -38,11 +38,12 @@ export default function RodView({ engine }: RodViewProps) {
       const charge = engine.rodCharge;
       const swing = engine.rodSwing;
       const bend = engine.rodBend;
-      rod.current.rotation.x = -0.25 + charge * 0.75 - swing * 0.9 - bend * 0.55;
-      rod.current.rotation.z = 0.18 + charge * 0.12 + Math.sin(bob.current * 2.2) * 0.01;
-      rod.current.position.y = -0.42 + sway + bend * 0.05;
-      rod.current.position.z = -0.5 + charge * 0.08;
+      rod.current.rotation.x = -0.08 + charge * 0.55 - swing * 0.7 - bend * 0.35;
+      rod.current.rotation.z = 0.1 + charge * 0.1 + Math.sin(bob.current * 2.2) * 0.01;
+      rod.current.position.y = -0.3 + sway + bend * 0.04;
+      rod.current.position.z = -0.35 + charge * 0.06;
     }
+
 
     // line from rod tip to bobber
     if (tipRef.current) {
