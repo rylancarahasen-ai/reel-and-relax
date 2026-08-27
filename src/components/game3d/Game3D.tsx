@@ -83,6 +83,8 @@ export default function Game3D() {
   const [stats, setStats] = useState<any>(null);
   const [unlockToast, setUnlockToast] = useState<string | null>(null);
 
+  if (import.meta.env.DEV) (window as any).__fishing = engine;
+
   const weather = WEATHER_CYCLE[weatherIndex];
   engine.weather = weather;
 
