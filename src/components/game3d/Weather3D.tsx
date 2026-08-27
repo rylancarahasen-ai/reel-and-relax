@@ -15,8 +15,8 @@ export interface WeatherPreset {
 export const WEATHER_PRESETS: Record<string, WeatherPreset> = {
   sunset: {
     sky: { sunPosition: [40, 4, -100], turbidity: 8, rayleigh: 3.2 },
-    ambient: 0.5,
-    sun: 1.5,
+    ambient: 0.72,
+    sun: 1.7,
     sunColor: '#ff9f6b',
     fog: '#8a6a70',
     fogDensity: 0.008,
@@ -39,16 +39,16 @@ export const WEATHER_PRESETS: Record<string, WeatherPreset> = {
   },
   rain: {
     sky: { sunPosition: [10, 12, -100], turbidity: 18, rayleigh: 0.4 },
-    ambient: 0.45,
-    sun: 0.4,
+    ambient: 0.6,
+    sun: 0.5,
     sunColor: '#8fa1b8',
     fog: '#4c5764',
     fogDensity: 0.024,
   },
   starry: {
     sky: { sunPosition: [0, -20, -100], turbidity: 0.2, rayleigh: 0.2 },
-    ambient: 0.22,
-    sun: 0.18,
+    ambient: 0.32,
+    sun: 0.25,
     sunColor: '#8fa8ff',
     fog: '#0d1226',
     fogDensity: 0.01,

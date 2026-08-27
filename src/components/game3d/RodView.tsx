@@ -38,11 +38,12 @@ export default function RodView({ engine }: RodViewProps) {
       const charge = engine.rodCharge;
       const swing = engine.rodSwing;
       const bend = engine.rodBend;
-      rod.current.rotation.x = -0.25 + charge * 0.75 - swing * 0.9 - bend * 0.55;
-      rod.current.rotation.z = 0.18 + charge * 0.12 + Math.sin(bob.current * 2.2) * 0.01;
-      rod.current.position.y = -0.42 + sway + bend * 0.05;
-      rod.current.position.z = -0.5 + charge * 0.08;
+      rod.current.rotation.x = -0.08 + charge * 0.55 - swing * 0.7 - bend * 0.35;
+      rod.current.rotation.z = 0.1 + charge * 0.1 + Math.sin(bob.current * 2.2) * 0.01;
+      rod.current.position.y = -0.3 + sway + bend * 0.04;
+      rod.current.position.z = -0.35 + charge * 0.06;
     }
+
 
     // line from rod tip to bobber
     if (tipRef.current) {
@@ -61,33 +62,34 @@ export default function RodView({ engine }: RodViewProps) {
     <>
       <primitive object={line} />
       <group ref={rig}>
-        <group ref={rod} position={[0.36, -0.42, -0.5]} rotation={[-0.25, -0.12, 0.18]}>
+        <group ref={rod} position={[0.3, -0.3, -0.35]} rotation={[-0.08, -0.1, 0.1]} scale={0.75}>
           {/* handle */}
-          <mesh position={[0, 0, 0.12]}>
-            <cylinderGeometry args={[0.035, 0.04, 0.28, 10]} />
-            <meshStandardMaterial color="#3b2415" roughness={0.85} />
+          <mesh position={[0, 0, 0.14]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.035, 0.042, 0.3, 10]} />
+            <meshStandardMaterial color="#5a3a20" roughness={0.85} />
           </mesh>
           {/* reel */}
-          <mesh position={[-0.06, -0.05, 0.02]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.06, 0.06, 0.05, 14]} />
-            <meshStandardMaterial color="#9ca3af" metalness={0.7} roughness={0.35} />
+          <mesh position={[-0.07, -0.05, 0.0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.06, 0.06, 0.06, 14]} />
+            <meshStandardMaterial color="#b6bcc4" metalness={0.7} roughness={0.3} />
           </mesh>
-          {/* blank */}
-          <mesh position={[0, 0.32, -0.42]} rotation={[Math.PI / 2.35, 0, 0]}>
-            <cylinderGeometry args={[0.007, 0.022, 1.5, 8]} />
-            <meshStandardMaterial color="#1f2937" roughness={0.5} />
+          {/* blank, pointing forward and slightly up */}
+          <mesh position={[0, 0.14, -0.75]} rotation={[-Math.PI / 2 + 0.16, 0, 0]}>
+            <cylinderGeometry args={[0.008, 0.024, 1.6, 8]} />
+            <meshStandardMaterial color="#3b4350" roughness={0.5} />
           </mesh>
-          <object3D ref={tipRef} position={[0, 0.86, -0.98]} />
+          <object3D ref={tipRef} position={[0, 0.28, -1.53]} />
           {/* hand */}
-          <mesh position={[0.01, -0.05, 0.16]}>
-            <sphereGeometry args={[0.075, 12, 12]} />
+          <mesh position={[0.0, -0.03, 0.1]}>
+            <sphereGeometry args={[0.08, 12, 12]} />
             <meshStandardMaterial color="#e0ac82" roughness={0.9} />
           </mesh>
-          <mesh position={[0.02, -0.14, 0.24]}>
-            <capsuleGeometry args={[0.06, 0.16, 4, 8]} />
+          <mesh position={[0.03, -0.12, 0.26]} rotation={[Math.PI / 2.6, 0, 0]}>
+            <capsuleGeometry args={[0.065, 0.2, 4, 8]} />
             <meshStandardMaterial color="#3f6f4d" roughness={1} />
           </mesh>
         </group>
+
       </group>
     </>
   );

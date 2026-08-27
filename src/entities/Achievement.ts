@@ -16,12 +16,27 @@ export class Achievement {
     const achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
     const newAchievement = {
       ...data,
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
       created_by: 'local-user',
     };
     achievements.push(newAchievement);
     localStorage.setItem('achievements', JSON.stringify(achievements));
     return new Achievement(newAchievement);
+  }
+
+  /** Ensures every stored achievement has a unique id (older saves reused timestamps). */
+  static async repairIds(): Promise<void> {
+    const achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+    const seen = new Set<string>();
+    let changed = false;
+    achievements.forEach((a: any) => {
+      if (!a.id || seen.has(a.id)) {
+        a.id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+        changed = true;
+      }
+      seen.add(a.id);
+    });
+    if (changed) localStorage.setItem('achievements', JSON.stringify(achievements));
   }
 
   static async list(): Promise<Achievement[]> {
