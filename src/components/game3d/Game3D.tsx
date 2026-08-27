@@ -259,8 +259,9 @@ export default function Game3D() {
         shadows
         dpr={[1, 1.75]}
         camera={{ fov: 72, near: 0.05, far: 900, position: [0, 2.6, 10] }}
-        onCreated={({ camera }) => {
+        onCreated={({ camera, scene }) => {
           cameraRef.current = camera;
+          if (import.meta.env.DEV) (window as any).__scene = { camera, scene };
         }}
       >
         <Weather3D weather={weather} />
