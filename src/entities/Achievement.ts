@@ -16,7 +16,7 @@ export class Achievement {
     const achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
     const newAchievement = {
       ...data,
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
       created_by: 'local-user',
     };
     achievements.push(newAchievement);
